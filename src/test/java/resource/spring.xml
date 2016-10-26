@@ -32,6 +32,9 @@
 	<bean id="receiver" class="com.dxb.example.ActiveMQ.queue.Receiver">
 		<property name="jmsTemplate" ref="jmsTemplate"></property>
 	</bean>
+	
+	
+	
 	<!-- 定义消息队列（Queue），我们监听一个新的队列，queue2 -->
 	<bean id="queueDestination2" class="org.apache.activemq.command.ActiveMQQueue">
 		<!-- 设置消息队列的名字 -->
@@ -50,6 +53,9 @@
 		<property name="destination" ref="queueDestination2" />
 		<property name="messageListener" ref="queueMessageListener" />
 	</bean>
+
+
+
 	<!-- 定义消息主题（Topic） -->
 	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
 		<constructor-arg>
@@ -84,5 +90,55 @@
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="destination" ref="topicDestination" />
 		<property name="messageListener" ref="topicMessageListener2" />
+	</bean>
+	
+	
+	
+	<!--这个是sessionAwareQueue目的地 -->
+	<bean id="sessionAwareQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg>
+			<value>sessionAwareQueue</value>
+		</constructor-arg>
+	</bean>
+
+	<!-- 可以获取session的MessageListener -->
+	<bean id="consumerSessionAwareMessageListener"
+		class="com.dxb.example.ActiveMQ.sessionAware.ConsumerSessionAwareMessageListener">
+		<property name="destination" ref="queueDestination" />
+	</bean>
+
+	<!-- 监听sessionAwareQueue 队列的消息，把回复消息写入 queueDestination指向队列，即queue1 -->
+	<bean id="sessionAwareListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="sessionAwareQueue" />
+		<property name="messageListener" ref="consumerSessionAwareMessageListener" />
+	</bean>
+	
+	
+	
+	<!--这个是adapterQueue目的地 -->
+	<bean id="adapterQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg>
+			<value>adapterQueue</value>
+		</constructor-arg>
+	</bean>
+
+	<!-- 消息监听适配器 -->
+	<bean id="messageListenerAdapter"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter">
+		<property name="delegate">
+			<bean class="com.dxb.example.ActiveMQ.listener.QueueMessageListener" />
+		</property>
+		<property name="defaultListenerMethod" value="receiveMessage" />
+	</bean>
+
+	<!-- 消息监听适配器对应的监听容器 -->
+	<bean id="messageListenerAdapterContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="adapterQueue" />
+		<!-- 使用MessageListenerAdapter来作为消息监听器 -->
+		<property name="messageListener" ref="messageListenerAdapter" />
 	</bean>
 </beans>

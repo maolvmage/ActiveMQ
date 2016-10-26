@@ -10,6 +10,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
@@ -53,6 +54,21 @@ public class SenderImpl
             }
         });
 
+    }
+
+    public void sendMessage(Destination destination, final String msg, final Destination response)
+    {
+        System.out.println("ProducerService向队列" + destination + "发送了消息：\t" + msg);
+        jmsTemplate.send(destination, new MessageCreator()
+        {
+            public Message createMessage(Session session)
+                throws JMSException
+            {
+                TextMessage textMessage = session.createTextMessage(msg);
+                textMessage.setJMSReplyTo(response);
+                return textMessage;
+            }
+        });
     }
 
     public void setJmsTemplate(JmsTemplate jmsTemplate)

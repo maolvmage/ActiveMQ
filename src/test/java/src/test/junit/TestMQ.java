@@ -46,6 +46,18 @@ public class TestMQ
     private TopicSender topicSender;
 
     /**
+     * 队列名adapterQueue
+     */
+    @Autowired
+    private Destination adapterQueue;
+
+    /**
+     * 队列名sessionAwareQueue
+     */
+    @Autowired
+    private Destination sessionAwareQueue;
+
+    /**
      * Description: 测试队列发送者<br>
      */
     @Test
@@ -81,4 +93,25 @@ public class TestMQ
         topicSender.publish(topic, "haha");
     }
 
+    /**
+     * 测试SessionAwareMessageListener 1. 生产者向队列sessionAwareQueue发送消息 2.
+     * SessionAwareMessageListener接受消息，并向queue1队列发送回复消息 3. 消费者从queue1消费消息
+     */
+    @Test
+    public void testAware()
+    {
+        senderImpl.sendMessage(sessionAwareQueue, "Hello sessionAware");
+        receiver.receive(queueDestination);
+    }
+
+    /**
+     * 测试MessageListenerAdapter 1. 生产者向队列adapterQueue发送消息 2.
+     * MessageListenerAdapter使ConsumerListener接受消息，并向queue1队列发送回复消息 3. 消费者从queue1消费消息
+     */
+    @Test
+    public void testAdapter()
+    {
+        senderImpl.sendMessage(adapterQueue, "Hello adapterQueue", queueDestination);
+        receiver.receive(queueDestination);
+    }
 }
