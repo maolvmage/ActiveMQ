@@ -7,6 +7,14 @@
 	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 		<property name="brokerURL" value="failover:(tcp://localhost:61616)" />
 	</bean>
+	
+	<!-- ActiveMQ连接池配置,SpingJMS实现 -->
+	<bean id="cachingConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory" ref="connectionFactory" />
+		<!-- Session缓存数量,这里属性也可以直接在这里配置 -->
+		<property name="sessionCacheSize" value="100" />
+	</bean>
 
 	<!-- 定义消息队列（Queue） -->
 	<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
@@ -18,7 +26,7 @@
 
 	<!-- 配置JMS模板（Queue），Spring提供的JMS工具类，它发送、接收消息。 -->
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="connectionFactory" ref="cachingConnectionFactory" />
 		<property name="defaultDestination" ref="queueDestination" />
 		<property name="receiveTimeout" value="10000" />
 	</bean>
@@ -32,9 +40,9 @@
 	<bean id="receiver" class="com.dxb.example.ActiveMQ.queue.Receiver">
 		<property name="jmsTemplate" ref="jmsTemplate"></property>
 	</bean>
-	
-	
-	
+
+
+
 	<!-- 定义消息队列（Queue），我们监听一个新的队列，queue2 -->
 	<bean id="queueDestination2" class="org.apache.activemq.command.ActiveMQQueue">
 		<!-- 设置消息队列的名字 -->
@@ -91,9 +99,9 @@
 		<property name="destination" ref="topicDestination" />
 		<property name="messageListener" ref="topicMessageListener2" />
 	</bean>
-	
-	
-	
+
+
+
 	<!--这个是sessionAwareQueue目的地 -->
 	<bean id="sessionAwareQueue" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg>
@@ -114,9 +122,9 @@
 		<property name="destination" ref="sessionAwareQueue" />
 		<property name="messageListener" ref="consumerSessionAwareMessageListener" />
 	</bean>
-	
-	
-	
+
+
+
 	<!--这个是adapterQueue目的地 -->
 	<bean id="adapterQueue" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg>
