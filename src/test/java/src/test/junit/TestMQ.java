@@ -81,7 +81,10 @@ public class TestMQ
     @Test
     public void testListenerSend()
     {
-        senderImpl.sendMessage(queueDestination2, "Hello China~~~~~~~~~~~~~~~");
+        for (int i = 0; i < 100; i++ )
+        {
+            senderImpl.sendMessage(queueDestination2, String.valueOf(i));
+        }
     }
 
     /**

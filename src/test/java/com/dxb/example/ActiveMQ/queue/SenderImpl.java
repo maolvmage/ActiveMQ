@@ -25,7 +25,6 @@ public class SenderImpl
      */
     public void sendMessage(Destination destination, final String msg)
     {
-        System.out.println("向队列" + destination.toString() + "发送了消息" + msg);
         jmsTemplate.send(destination, new MessageCreator()
         {
             public Message createMessage(Session session)

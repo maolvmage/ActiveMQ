@@ -17,17 +17,24 @@ import javax.jms.TextMessage;
 import com.dxb.example.ActiveMQ.bean.User;
 
 
-public class QueueMessageListener implements MessageListener
+public class QueueMessageListener1 implements MessageListener
 {
     public void onMessage(Message message)
     {
+        TextMessage msg = (TextMessage)message;
+        try
+        {
+            System.out.println("1当前消息的类型为：" + message.getJMSType());
+        }
+        catch (JMSException e)
+        {}
         // 如果是文本消息
         if (message instanceof TextMessage)
         {
             TextMessage tm = (TextMessage)message;
             try
             {
-                System.out.println("ConsumerService从队列" + "收到了消息：\t" + tm.getText());
+                System.out.println("1ConsumerService从队列" + "收到了消息：\t" + tm.getText());
             }
             catch (JMSException e)
             {
@@ -42,7 +49,7 @@ public class QueueMessageListener implements MessageListener
             MapMessage mm = (MapMessage)message;
             try
             {
-                System.out.println("ConsumerService从队列" + "收到了消息：\t" + mm.getString("name"));
+                System.out.println("1ConsumerService从队列" + "收到了消息：\t" + mm.getString("name"));
             }
             catch (JMSException e)
             {
@@ -65,7 +72,7 @@ public class QueueMessageListener implements MessageListener
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            System.out.println("ConsumerService从队列" + "收到了消息：\t" + user);
+            System.out.println("1ConsumerService从队列" + "收到了消息：\t" + user);
         }
 
         // 如果是bytes消息
