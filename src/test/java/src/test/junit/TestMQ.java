@@ -63,7 +63,7 @@ public class TestMQ
     @Test
     public void sendQueueTest()
     {
-        senderImpl.sendMessage("sss");
+        senderImpl.sendMessage("aaaa");
     }
 
     /**

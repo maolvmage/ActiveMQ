@@ -5,7 +5,6 @@
 package com.dxb.example.ActiveMQ.queue;
 
 
-import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -41,8 +40,6 @@ public class SenderImpl
     public void sendMessage(final String msg)
     {
         String destination = jmsTemplate.getDefaultDestination().toString();
-        jmsTemplate.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        jmsTemplate.setDeliveryPersistent(false);
         System.out.println("向队列" + destination + "发送了消息:" + msg);
         jmsTemplate.send(new MessageCreator()
         {
